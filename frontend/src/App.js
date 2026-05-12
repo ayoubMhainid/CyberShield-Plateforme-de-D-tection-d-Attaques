@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import './App.css';
 
+const API_URL = 'http://127.0.0.1:8000/upload';
+
 const sampleLogs = `2026-05-07 09:14:12 failed login admin from 185.23.44.91
 2026-05-07 09:14:19 failed login root from 185.23.44.91
 2026-05-07 09:18:02 GET /products?id=1 SELECT * FROM users
@@ -15,43 +17,88 @@ const streamLines = [
   'threat feed synced',
 ];
 
-function analyzeLogs(logs) {
-  const normalized = logs.toLowerCase();
-  const threats = [];
+function describeThreat(name) {
+  const normalized = name.toLowerCase();
 
-  if (normalized.includes('failed login')) {
-    threats.push({
-      name: 'Brute Force',
-      severity: 'High',
-      detail: 'Multiple failed login attempts detected from the same source.',
-    });
-  }
-
-  if (normalized.includes('select') || normalized.includes('drop')) {
-    threats.push({
-      name: 'SQL Injection',
+  if (normalized.includes('sql')) {
+    return {
+      name,
       severity: 'Critical',
-      detail: 'Database keywords were found inside HTTP request activity.',
-    });
+      detail: 'Backend detected database keywords inside request activity.',
+    };
   }
 
-  if (normalized.includes('185.') || normalized.includes('tor') || normalized.includes('proxy')) {
-    threats.push({
-      name: 'Suspicious IP',
+  if (normalized.includes('command') || normalized.includes('xss')) {
+    return {
+      name,
+      severity: 'High',
+      detail: 'Backend matched a dangerous payload signature in the log stream.',
+    };
+  }
+
+  if (normalized.includes('brute')) {
+    return {
+      name,
+      severity: 'High',
+      detail: 'Backend found repeated failed authentication attempts.',
+    };
+  }
+
+  if (normalized.includes('suspicious') || normalized.includes('directory')) {
+    return {
+      name,
       severity: 'Medium',
-      detail: 'External anonymized traffic needs manual review.',
-    });
+      detail: 'Backend flagged an abnormal connection or path pattern.',
+    };
   }
 
-  return threats;
+  return {
+    name,
+    severity: 'Medium',
+    detail: 'Backend returned a suspicious security event.',
+  };
 }
 
 function App() {
   const [logs, setLogs] = useState(sampleLogs);
-  const threats = useMemo(() => analyzeLogs(logs), [logs]);
+  const [analysis, setAnalysis] = useState({ threats: [], risk_score: 0 });
+  const [apiStatus, setApiStatus] = useState('Ready to send logs to FastAPI');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const threats = useMemo(
+    () => analysis.threats.filter((threat) => threat !== 'No Threat Detected').map(describeThreat),
+    [analysis]
+  );
   const totalLines = logs.split('\n').filter(Boolean).length;
   const safeEvents = Math.max(totalLines - threats.length, 0);
-  const riskScore = Math.min(threats.length * 29 + (logs.length > 180 ? 9 : 0), 100);
+  const riskScore = Math.min(analysis.risk_score || 0, 100);
+
+  const analyzeWithBackend = async (content = logs, filename = 'pasted-logs.txt') => {
+    const formData = new FormData();
+    const file = new File([content], filename, { type: 'text/plain' });
+
+    formData.append('file', file);
+    setIsAnalyzing(true);
+    setApiStatus('Sending logs to FastAPI...');
+
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`API returned ${response.status}`);
+      }
+
+      const result = await response.json();
+      setAnalysis(result);
+      setApiStatus('Backend connected: analysis received');
+    } catch (error) {
+      setApiStatus(`Backend error: ${error.message}`);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
 
   const handleFileUpload = async (event) => {
     const file = event.target.files?.[0];
@@ -60,7 +107,9 @@ function App() {
       return;
     }
 
-    setLogs(await file.text());
+    const content = await file.text();
+    setLogs(content);
+    analyzeWithBackend(content, file.name);
   };
 
   return (
@@ -84,7 +133,10 @@ function App() {
               Upload logs
               <input type="file" accept=".log,.txt" onChange={handleFileUpload} />
             </label>
-            <span className="live-pill">Live analysis active</span>
+            <button className="analyze-button" type="button" onClick={() => analyzeWithBackend()} disabled={isAnalyzing}>
+              {isAnalyzing ? 'Analyzing...' : 'Analyze with API'}
+            </button>
+            <span className="live-pill">{apiStatus}</span>
           </div>
         </div>
 

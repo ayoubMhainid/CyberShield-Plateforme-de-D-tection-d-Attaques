@@ -37,10 +37,6 @@ def analyze_logs(logs: str):
         threats.append("Command Injection")
         risk_score += 45
 
-    # No threat detected
-    if not threats:
-        threats.append("No Threat Detected")
-
     return {
         "threats": threats,
         "risk_score": risk_score
