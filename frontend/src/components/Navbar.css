@@ -1,0 +1,241 @@
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  border-bottom: 1px solid rgba(53, 255, 200, 0.15);
+  background: linear-gradient(90deg, rgba(5, 7, 13, 0.98), rgba(8, 16, 26, 0.95));
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: #35ffc8;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.brand-icon {
+  font-size: 1.8rem;
+}
+
+.brand-text {
+  background: linear-gradient(90deg, #35ffc8, #28c7ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.username {
+  color: #88a6b5;
+  font-size: 0.95rem;
+}
+
+.logout-btn {
+  padding: 10px 20px;
+  border: 1px solid rgba(53, 255, 200, 0.3);
+  border-radius: 8px;
+  background: rgba(53, 255, 200, 0.08);
+  color: #35ffc8;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.28s ease;
+}
+
+.logout-btn:hover {
+  background: rgba(53, 255, 200, 0.16);
+  box-shadow: 0 0 15px rgba(53, 255, 200, 0.15);
+}
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 70px;
+  width: 280px;
+  height: calc(100vh - 70px);
+  border-right: 1px solid rgba(53, 255, 200, 0.15);
+  background: linear-gradient(180deg, rgba(5, 7, 13, 0.98), rgba(8, 16, 26, 0.95));
+  padding: 24px 0;
+  overflow-y: auto;
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 0 24px 20px;
+  border-bottom: 1px solid rgba(53, 255, 200, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #ffffff;
+}
+
+.close-sidebar {
+  display: none;
+  background: none;
+  border: none;
+  color: #35ffc8;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.sidebar-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+}
+
+.sidebar-menu li {
+  margin: 8px 0;
+  padding: 0 12px;
+}
+
+.menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: #88a6b5;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.28s ease;
+  text-align: left;
+}
+
+.menu-item:hover {
+  background: rgba(53, 255, 200, 0.08);
+  color: #35ffc8;
+  border-color: rgba(53, 255, 200, 0.15);
+}
+
+.menu-item.active {
+  background: linear-gradient(90deg, rgba(53, 255, 200, 0.2), rgba(40, 199, 255, 0.15));
+  color: #35ffc8;
+  border-color: rgba(53, 255, 200, 0.3);
+  box-shadow: inset 0 0 12px rgba(53, 255, 200, 0.08);
+}
+
+.menu-icon {
+  font-size: 1.3rem;
+  width: 28px;
+  text-align: center;
+}
+
+.menu-label {
+  flex: 1;
+  font-size: 0.95rem;
+}
+
+.sidebar-footer {
+  padding: 20px 24px;
+  border-top: 1px solid rgba(53, 255, 200, 0.1);
+  text-align: center;
+}
+
+.version {
+  margin: 0;
+  color: #35ffc8;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.tagline {
+  margin: 6px 0 0;
+  color: #88a6b5;
+  font-size: 0.78rem;
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 70px 0 0 280px;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 98;
+}
+
+@media (max-width: 900px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: block;
+  }
+
+  .close-sidebar {
+    display: block;
+  }
+}
+
+@media (max-width: 560px) {
+  .navbar {
+    padding: 0 16px;
+  }
+
+  .brand-text {
+    display: none;
+  }
+
+  .sidebar {
+    width: 240px;
+  }
+
+  .sidebar-overlay {
+    inset: 70px 0 0 240px;
+  }
+}

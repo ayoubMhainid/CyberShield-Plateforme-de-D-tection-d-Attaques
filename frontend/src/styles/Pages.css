@@ -1,0 +1,238 @@
+.page-container {
+  padding: 40px 30px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.page-container h1 {
+  font-size: 2rem;
+  color: #ffffff;
+  margin: 0 0 10px;
+  text-shadow: 0 0 20px rgba(40, 199, 255, 0.2);
+}
+
+.page-container .subtitle {
+  color: #88a6b5;
+  font-size: 0.95rem;
+  margin: 0 0 30px;
+}
+
+/* Reports Page */
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.report-card {
+  padding: 24px;
+  border: 1px solid rgba(53, 255, 200, 0.2);
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(8, 16, 26, 0.9), rgba(4, 8, 14, 0.8));
+  transition: all 0.28s ease;
+}
+
+.report-card.risk-critical {
+  border-color: #ff2f6d;
+  box-shadow: 0 0 20px rgba(255, 47, 109, 0.1);
+}
+
+.report-card.risk-warning {
+  border-color: #ffb020;
+  box-shadow: 0 0 20px rgba(255, 176, 32, 0.1);
+}
+
+.report-card.risk-safe {
+  border-color: #35ffc8;
+  box-shadow: 0 0 20px rgba(53, 255, 200, 0.1);
+}
+
+.report-card:hover {
+  transform: translateY(-4px);
+}
+
+.report-header {
+  margin-bottom: 16px;
+}
+
+.report-header h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.1rem;
+}
+
+.report-date {
+  color: #88a6b5;
+  font-size: 0.85rem;
+}
+
+.report-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 16px 0;
+}
+
+.stat {
+  padding: 12px;
+  background: rgba(53, 255, 200, 0.05);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat span {
+  display: block;
+  color: #88a6b5;
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+.stat strong {
+  display: block;
+  color: #35ffc8;
+  font-size: 1.3rem;
+}
+
+.progress-bar {
+  height: 6px;
+  background: rgba(53, 255, 200, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #35ffc8, #ff2f6d);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.download-btn {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(135deg, #35ffc8, #28c7ff);
+  border: none;
+  border-radius: 8px;
+  color: #02110d;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.28s ease;
+}
+
+.download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px rgba(53, 255, 200, 0.2);
+}
+
+/* Settings Page */
+.settings-panel {
+  border: 1px solid rgba(53, 255, 200, 0.2);
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(8, 16, 26, 0.9), rgba(4, 8, 14, 0.8));
+  padding: 30px;
+}
+
+.settings-section {
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid rgba(53, 255, 200, 0.1);
+}
+
+.settings-section:last-of-type {
+  border-bottom: none;
+}
+
+.settings-section h2 {
+  color: #ffffff;
+  margin: 0 0 20px;
+  font-size: 1.2rem;
+}
+
+.setting-item {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.setting-item label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #d8fff4;
+  font-weight: 700;
+  cursor: pointer;
+  flex: 1;
+}
+
+.setting-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #35ffc8;
+}
+
+.setting-item select {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid rgba(53, 255, 200, 0.2);
+  border-radius: 8px;
+  background: rgba(2, 10, 16, 0.8);
+  color: #d8fff4;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.setting-item select:focus {
+  outline: none;
+  border-color: #35ffc8;
+}
+
+.save-btn,
+.danger-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 0.28s ease;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+.save-btn {
+  background: linear-gradient(135deg, #35ffc8, #28c7ff);
+  color: #02110d;
+  width: 100%;
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(53, 255, 200, 0.3);
+}
+
+.danger-btn {
+  background: rgba(255, 47, 109, 0.1);
+  border: 1px solid #ff2f6d;
+  color: #ff9db5;
+}
+
+.danger-btn:hover {
+  background: rgba(255, 47, 109, 0.2);
+  box-shadow: 0 0 10px rgba(255, 47, 109, 0.15);
+}
+
+@media (max-width: 768px) {
+  .reports-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-container {
+    padding: 24px 16px;
+  }
+
+  .page-container h1 {
+    font-size: 1.5rem;
+  }
+}

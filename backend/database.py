@@ -1,5 +1,11 @@
 from pymongo import MongoClient
 
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient("mongodb://localhost:27017")
+
 db = client["cybershield"]
-collection = db["logs"]
+
+analyses_collection = db["analyses"]
+attacks_collection = db["attacks"]
+logs_collection = db["logs"]
+users_collection = db["users"]
+

@@ -1,0 +1,46 @@
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #05070d 0%, #0a0d15 50%, #05070d 100%);
+}
+
+.dashboard-content {
+  flex: 1;
+  margin-top: 70px;
+  overflow-y: auto;
+  background: linear-gradient(135deg, rgba(5, 7, 13, 0.9), rgba(8, 16, 26, 0.85));
+}
+
+.dashboard-main {
+  padding: 40px 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Scrollbar styling */
+.dashboard-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dashboard-content::-webkit-scrollbar-track {
+  background: rgba(53, 255, 200, 0.05);
+}
+
+.dashboard-content::-webkit-scrollbar-thumb {
+  background: rgba(53, 255, 200, 0.2);
+  border-radius: 4px;
+}
+
+.dashboard-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(53, 255, 200, 0.4);
+}
+
+@media (max-width: 900px) {
+  .dashboard-main {
+    padding: 24px 16px;
+  }
+
+  .dashboard-content {
+    margin-top: 70px;
+  }
+}
