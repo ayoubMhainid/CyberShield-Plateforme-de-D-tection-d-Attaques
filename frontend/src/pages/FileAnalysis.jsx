@@ -4,40 +4,40 @@ import '../styles/AnalysisPages.css';
 const API_URL = 'http://localhost:8000/upload';
 
 function FileAnalysis() {
-  const [files, setFiles] = useState([]);
   const [analyzing, setAnalyzing] = useState(false);
   const [results, setResults] = useState([]);
   const fileInputRef = useRef(null);
 
+  const isSupportedFile = (file) =>
+    ['.log', '.txt', '.json', '.csv'].some((ext) =>
+      file.name.toLowerCase().endsWith(ext)
+    );
+
   const handleDrop = (e) => {
     e.preventDefault();
-    const droppedFiles = Array.from(e.dataTransfer.files).filter((file) =>
-      ['.log', '.txt', '.json', '.csv'].some((ext) =>
-        file.name.toLowerCase().endsWith(ext)
-      )
-    );
+    const droppedFiles = Array.from(e.dataTransfer.files).filter(isSupportedFile);
     handleFiles(droppedFiles);
   };
 
   const handleFiles = async (selectedFiles) => {
-    if (!selectedFiles.length) return;
+    const validFiles = selectedFiles.filter(isSupportedFile);
+    if (!validFiles.length) return;
 
-    setFiles(selectedFiles);
     setAnalyzing(true);
     setResults([]);
 
     const analysisResults = [];
 
-    for (const file of selectedFiles) {
+    for (const file of validFiles) {
       try {
         const formData = new FormData();
         formData.append('file', file);
 
         const response = await fetch(API_URL, {
-  method: 'POST',
-  body: formData,
-  mode: 'cors',
-});
+          method: 'POST',
+          body: formData,
+          mode: 'cors',
+        });
 
         if (!response.ok) {
           const errorText = await response.text();
@@ -45,14 +45,20 @@ function FileAnalysis() {
         }
 
         const data = await response.json();
+        console.log('FILE ANALYSIS RESPONSE:', data);
+
         const threats = Array.isArray(data.threats) ? data.threats : [];
+        const realThreats =
+          threats.length && threats[0] !== 'No Threat Detected' ? threats : [];
 
         analysisResults.push({
           filename: file.name,
           size: (file.size / 1024).toFixed(2) + ' KB',
-          risks: threats.length,
+          risks: realThreats.length,
           riskScore: data.risk_score || 0,
-          threats,
+          threats: realThreats,
+          threatDetails: data.threat_details || {},
+          aiAnalysis: data.ai_analysis || null,
           status:
             data.risk_score > 70
               ? 'Critical'
@@ -64,6 +70,7 @@ function FileAnalysis() {
         analysisResults.push({
           filename: file.name,
           error: err.message || 'Failed to fetch',
+          status: 'Error',
         });
       }
     }
@@ -79,7 +86,9 @@ function FileAnalysis() {
   return (
     <div className="analysis-container">
       <h1>📁 File Analysis</h1>
-      <p className="subtitle">Upload log files for threat detection</p>
+      <p className="subtitle">
+        Upload log files for threat detection and AI anomaly detection
+      </p>
 
       <div
         className="file-upload-area"
@@ -99,23 +108,27 @@ function FileAnalysis() {
         </button>
 
         <input
-  ref={fileInputRef}
-  type="file"
-  multiple
-  webkitdirectory="true"
-  directory="true"
-  accept=".log,.txt,.json,.csv"
-  onChange={(e) => {
-    handleFiles(Array.from(e.target.files));
-    e.target.value = '';
-  }}
-  style={{ display: 'none' }}
-/>
+          ref={fileInputRef}
+          type="file"
+          multiple
+          webkitdirectory="true"
+          directory="true"
+          accept=".log,.txt,.json,.csv"
+          onChange={(e) => {
+            handleFiles(Array.from(e.target.files));
+            e.target.value = '';
+          }}
+          style={{ display: 'none' }}
+        />
 
         <p className="supported">Supported: .log, .txt, .json, .csv</p>
       </div>
 
-      {analyzing && <div className="loading">Analyzing files...</div>}
+      {analyzing && (
+        <div className="loading">
+          Analyzing files with rule engine and AI model...
+        </div>
+      )}
 
       {results.length > 0 && (
         <div className="results-grid">
@@ -142,6 +155,7 @@ function FileAnalysis() {
                   <p>Size: <strong>{result.size}</strong></p>
                   <p>Risk Score: <strong>{result.riskScore}%</strong></p>
                   <p>Threats Detected: <strong>{result.risks}</strong></p>
+
                   <p>
                     Threats:{' '}
                     <strong>
@@ -150,6 +164,30 @@ function FileAnalysis() {
                         : 'No threats'}
                     </strong>
                   </p>
+
+                  {Object.keys(result.threatDetails).length > 0 && (
+                    <div className="threat-details-box">
+                      <h4>Threat Details</h4>
+                      {Object.entries(result.threatDetails).map(([name, score]) => (
+                        <p key={name}>
+                          <strong>{name}:</strong> {score}%
+                        </p>
+                      ))}
+                    </div>
+                  )}
+
+                  {result.aiAnalysis && (
+                    <div className="ai-box">
+                      <h3>🤖 AI Anomaly Detection</h3>
+                      <p>Model: <strong>{result.aiAnalysis.model}</strong></p>
+                      <p>Result: <strong>{result.aiAnalysis.ai_result}</strong></p>
+                      <p>AI Score: <strong>{result.aiAnalysis.ai_score}%</strong></p>
+                      <p>
+                        Explanation:{' '}
+                        <strong>{result.aiAnalysis.explanation}</strong>
+                      </p>
+                    </div>
+                  )}
                 </>
               )}
             </div>
